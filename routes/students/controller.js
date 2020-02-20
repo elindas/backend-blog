@@ -21,7 +21,7 @@ module.exports = {
             const data = req.body;
 
             const result = await Students.create(data);
-
+            console.log(result)
             res.status(200).send({
                 message: "New data user is successfully added",
                 data: result

@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const todoSchema = new Schema({
-    todo: {
-        type: String
-    },
-    status: {
+const blogSchema = new Schema({
+    title: {
         type: String,
         required: true,
-        default: "PROGRESS"
+
+    },
+    message: {
+        type: String,
+        required: true,
+        
     },
     user: {
         type: Schema.Types.ObjectId,
@@ -16,6 +18,6 @@ const todoSchema = new Schema({
     }
 });
 
-const Todos = mongoose.model("todos", todoSchema);
+const Blog = mongoose.model("blog", blogSchema);
 
-module.exports = Todos;
+module.exports = Blog;

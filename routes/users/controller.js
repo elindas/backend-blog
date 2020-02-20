@@ -2,39 +2,15 @@ const { Users } = require("../../models");
 const { hashPassword, comparedPassword } = require("../../helpers");
 const jwt= require("jsonwebtoken")
 module.exports = {
-    getAll: async (req, res) => {
-        try {
-            const result = await Users.find({});
-
-            res.status(200).send({ message: "Show datas users", data: result });
-        } catch (error) {
-            console.log(error);
-        }
-    },
-    getById: (req, res) => {
-        const { id } = req.params;
-
-        const filterById = users.filter(item => {
-            if (item.id === parseInt(id)) {
-                return item;
-            }
-        });
-
-        res.status(200).send({
-            message: `Data user with id ${id}`,
-            data: filterById[0]
-        });
-    },
-
+   
     postData: async (req, res) => {
         try {
             const data = req.body;
-            const file = req.file;
+           
             const hash = await hashPassword(req.body.password);
 
             const result = await Users.create({
                 ...data,
-                avatar: file === undefined ? null : file.path,
                 password: hash
             });
 
@@ -72,5 +48,67 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-    }
+    },
+    getByEmail: async (req, res) => {
+        try {
+            const result = await Users.findOne({
+                email: req.params.email
+            }).populate("blog", "title message")
+
+            res.status(200).send({ message: "Show data by email", data: result });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    getBlog: async (req, res) => {
+        try {
+            const result = await Users.findOne({ email: req.user.email });
+
+
+            if (req.user.email === result.email) {
+                const {blog}= result
+
+                const token = jwt.sign({blog}, "BLOG")
+
+                res.status(200).send({
+                    message: "Show blog by email",
+                    token: token
+                });
+            } else {
+                res.status(403).send({
+                    message: "Email is not matched"
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    
+    updateById: async (req, res) => {
+        try {
+            const data = req.body;
+
+            const hash = await hashPassword(req.body.password);
+            
+            let update = await Users.findByIdAndUpdate(req.params.id, {...data, password: hash}, {new: true});
+            
+            res.status(200).send({
+                message: "Show data updated",
+                data: update
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    getAll: async (req, res) => {
+        try {
+            const result = await Users.find({}).populate("blog", "title message")
+            
+            console.log('INI RESULT GET ALL', result)
+            res.status(200).send({ message: "Show datas users", data: result });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
 };

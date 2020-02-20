@@ -22,11 +22,17 @@ app.use(
     expressJWT({ secret: "SECRET" }).unless({
         path: [
             { url: "/", methods: ["GET"] },
+            { url: "/blog/detail/:id", methods: ["GET"] },
+
             {
                 url: "/users/login",
                 methods: ["POST"]
             },
-            { url: "/users", methods: ["POST"] }
+            
+            { url: "/blog", methods: ["GET"] },
+            
+            { url: "/users", methods: ["POST"] },
+            
         ]
     })
 );
@@ -40,7 +46,7 @@ app.use((err, req, res, next) => {
 });
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/todos", require("./routes/todos"));
+app.use("/blog", require("./routes/blog"));
 app.use("/students", require("./routes/students"));
 
 app.use("/assets", express.static("assets"));
