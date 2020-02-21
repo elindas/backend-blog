@@ -22,15 +22,10 @@ app.use(
     expressJWT({ secret: "SECRET" }).unless({
         path: [
             { url: "/", methods: ["GET"] },
-            { url: "/blog/detail/:id", methods: ["GET"] },
-
-            {
-                url: "/users/login",
-                methods: ["POST"]
-            },
-            
             { url: "/blog", methods: ["GET"] },
             
+            { url: /^\/blog\/detail\/.*/, methods: ["GET"] },
+            { url: "/users/login", methods: ["POST"]},
             { url: "/users", methods: ["POST"] },
             
         ]
